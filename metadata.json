@@ -1,0 +1,5 @@
+{
+  "name": "PaPeR ThOuGhTs",
+  "description": "A Notebook OS styled app that analyzes lecture notes and categorizes them by mood using Gemini AI.",
+  "requestFramePermissions": []
+}

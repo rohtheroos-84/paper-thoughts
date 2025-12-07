@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PaPeR ThOuGhTs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Patrick+Hand&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              'hand': ['"Patrick Hand"', 'cursive'],
+              'marker': ['"Permanent Marker"', 'cursive'],
+              'messy': ['"Gloria Hallelujah"', 'cursive'],
+            },
+            colors: {
+              'paper-line': '#a3c2c2', 
+              'paper-margin': '#ff9999', 
+              'tape-translucent': 'rgba(255, 255, 255, 0.4)',
+              mood: {
+                confused: '#fef3c7', // Yellow-100ish
+                confident: '#dcfce7', // Green-100ish
+                bored: '#e2e8f0', // Slate-200ish
+                alert: '#ffe4e6', // Rose-100ish
+              },
+              darkmood: {
+                confused: '#422006', // Yellow-950
+                confident: '#052e16', // Green-950
+                bored: '#0f172a', // Slate-900
+                alert: '#4c0519', // Rose-950
+              }
+            },
+            keyframes: {
+              'slide-up-fade': {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'highlight': {
+                '0%': { backgroundSize: '0% 100%' },
+                '100%': { backgroundSize: '100% 100%' },
+              }
+            },
+            animation: {
+              'slide-up-fade': 'slide-up-fade 0.5s ease-out forwards',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        /* Default Light Mode Desk */
+        background-color: #f0ebe1; 
+        background-image: radial-gradient(#dcd8cf 1px, transparent 1px);
+        background-size: 20px 20px;
+        transition: background-color 0.3s ease;
+      }
+      body.dark {
+        /* Dark Mode Desk */
+        background-color: #1e1e24;
+        background-image: radial-gradient(#2d2d35 1px, transparent 1px);
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 5px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #bbb;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #4b5563;
+      }
+      
+      /* Highlight effect for keywords */
+      .keyword-highlight {
+        background: linear-gradient(120deg, rgba(255,255,0,0.4) 0%, rgba(255,255,0,0.4) 100%);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        border-radius: 2px;
+        padding: 0 2px;
+      }
+      .dark .keyword-highlight {
+         background: linear-gradient(120deg, rgba(255,255,0,0.2) 0%, rgba(255,255,0,0.2) 100%);
+         color: #fff;
+      }
+
+      /* PDF Print Styles */
+      @media print {
+        body { background: white; }
+        .no-print { display: none !important; }
+        .print-only { display: block !important; }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "jspdf": "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/+esm"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
