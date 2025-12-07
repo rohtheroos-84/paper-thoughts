@@ -147,14 +147,16 @@ export default function App() {
 
     setIsAnalyzing(true);
     setError(null);
-    // Keep old result visually until new one is ready if desired, but clearing feels snappier for "re-run"
+    setResult(null); // Clear old results
     
     try {
       const data = await analyzeNotes(inputText);
       setResult(data);
       setParagraphs(data.paragraphs);
     } catch (err) {
-      setError("Failed to analyze notes. Please try again.");
+      const errorMessage = err instanceof Error ? err.message : "Failed to analyze notes. Please try again.";
+      setError(errorMessage);
+      console.error("Analysis error:", err);
     } finally {
       setIsAnalyzing(false);
     }
@@ -352,6 +354,24 @@ export default function App() {
                                       "Run an analysis to see the<br/>mood timeline here."
                                     </p>
                                  </div>
+                               )}
+
+                               {/* Error State */}
+                               {error && !isAnalyzing && (
+                                   <div className="flex flex-col items-center justify-center p-12">
+                                       <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg p-6 max-w-lg">
+                                           <div className="flex items-start gap-3">
+                                               <svg className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                               </svg>
+                                               <div>
+                                                   <h3 className="font-marker text-lg text-red-700 dark:text-red-400 mb-2">Analysis Failed</h3>
+                                                   <p className="font-hand text-red-600 dark:text-red-300">{error}</p>
+                                                   <p className="font-hand text-sm text-red-500 dark:text-red-400 mt-2 opacity-75">Check the browser console for more details.</p>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
                                )}
 
                                {/* Analysis Content */}

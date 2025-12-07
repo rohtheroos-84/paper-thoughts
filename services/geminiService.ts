@@ -27,7 +27,15 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
     };
   }
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY;
+  console.log("API Key exists:", !!apiKey);
+  console.log("API Key length:", apiKey?.length);
+  
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not set in environment variables");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
 
   const responseSchema: Schema = {
     type: Type.OBJECT,
@@ -114,6 +122,10 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
 
   } catch (error) {
     console.error("AI Analysis Error:", error);
+    console.error("Error details:", error instanceof Error ? error.message : String(error));
+    if (error instanceof Error) {
+      throw new Error(`Failed to analyze notes: ${error.message}`);
+    }
     throw error;
   }
 };
