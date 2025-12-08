@@ -5,6 +5,7 @@ import { StickyNote } from './components/StickyNote';
 import { NotebookSheet } from './components/NotebookSheet';
 import { Timeline } from './components/Timeline';
 import { StudyPlan } from './components/StudyPlan';
+import { ImageUpload } from './components/ImageUpload';
 import { jsPDF } from 'jspdf';
 
 // --- Navigation Component ---
@@ -82,6 +83,7 @@ const AboutPage = ({ onBack }: { onBack: () => void }) => (
                 <section>
                     <h2 className="font-bold font-marker text-xl mb-2">What does this do?</h2>
                     <p>Paper Thoughts takes your raw lecture notes and uses AI to "read the room" of your own writing. It breaks text into paragraphs and tags them with a mood based on your tone.</p>
+                    <p className="mt-2 text-sm opacity-80">New: You can now upload images of handwritten or printed notes, and the AI will extract the text for you!</p>
                 </section>
                 
                 <section>
@@ -95,8 +97,18 @@ const AboutPage = ({ onBack }: { onBack: () => void }) => (
                 </section>
 
                 <section>
+                    <h2 className="font-bold font-marker text-xl mb-2">Image Upload Feature</h2>
+                    <p>Upload photos or screenshots of your handwritten or printed lecture notes. The AI will:</p>
+                    <ul className="list-disc pl-5 space-y-1 mt-2">
+                        <li>Extract all visible text from the image</li>
+                        <li>Preserve formatting and paragraph structure</li>
+                        <li>Let you review and edit the text before analysis</li>
+                    </ul>
+                </section>
+
+                <section>
                     <h2 className="font-bold font-marker text-xl mb-2">Privacy & Limitations</h2>
-                    <p>This is a study aid, not a grading tool. The AI might misinterpret sarcasm or complex notes. Your notes are sent to Google Gemini for processing but are not stored by this app.</p>
+                    <p>This is a study aid, not a grading tool. The AI might misinterpret sarcasm or complex notes. Your notes and images are sent to Google Gemini for processing but are not stored by this app.</p>
                 </section>
 
                 <div className="pt-8 text-center">
@@ -117,6 +129,7 @@ export default function App() {
   const [paragraphs, setParagraphs] = useState<ParagraphAnalysis[]>([]); // Separated for reordering
   const [error, setError] = useState<string | null>(null);
   const [filterMood, setFilterMood] = useState<Mood | 'ALL'>('ALL');
+  const [showImageUpload, setShowImageUpload] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dragItem = useRef<number | null>(null);
@@ -167,7 +180,25 @@ export default function App() {
     setResult(null);
     setParagraphs([]);
     setError(null);
+    setShowImageUpload(false);
     if (textAreaRef.current) textAreaRef.current.focus();
+  };
+
+  const handleTextExtracted = (text: string) => {
+    setInputText(text);
+    setShowImageUpload(false);
+    setError(null);
+    // Focus on textarea to allow user to edit
+    setTimeout(() => {
+      if (textAreaRef.current) {
+        textAreaRef.current.focus();
+        textAreaRef.current.scrollTop = 0;
+      }
+    }, 100);
+  };
+
+  const handleImageUploadError = (errorMsg: string) => {
+    setError(errorMsg);
   };
 
   // Drag and Drop Handlers
@@ -281,14 +312,51 @@ export default function App() {
                   {/* LEFT: Input Area */}
                   <div className="w-full md:w-5/12 h-1/2 md:h-full border-b md:border-b-0 md:border-r border-gray-300 dark:border-gray-700 relative z-10 flex flex-col">
                     <NotebookSheet title="Input Notes" headerColor="bg-blue-200">
-                       <textarea
-                          ref={textAreaRef}
-                          value={inputText}
-                          onChange={(e) => setInputText(e.target.value)}
-                          placeholder="Paste your lecture notes here..."
-                          className="w-full h-full bg-transparent resize-none outline-none text-lg md:text-xl leading-8 text-gray-700 dark:text-gray-300 placeholder-gray-400/70 font-hand"
-                          spellCheck={false}
-                       />
+                       {/* Tab Switcher */}
+                       <div className="flex gap-2 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+                         <button
+                           onClick={() => setShowImageUpload(false)}
+                           className={`px-4 py-2 font-marker text-sm rounded-t transition-colors ${
+                             !showImageUpload
+                               ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-b-2 border-blue-500'
+                               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                           }`}
+                         >
+                           Type / Paste Text
+                         </button>
+                         <button
+                           onClick={() => setShowImageUpload(true)}
+                           className={`px-4 py-2 font-marker text-sm rounded-t transition-colors ${
+                             showImageUpload
+                               ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-b-2 border-blue-500'
+                               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                           }`}
+                         >
+                           Upload Image
+                         </button>
+                       </div>
+
+                       {/* Text Input */}
+                       {!showImageUpload && (
+                         <textarea
+                            ref={textAreaRef}
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            placeholder="Paste your lecture notes here or switch to 'Upload Image' to scan handwritten notes..."
+                            className="w-full h-full bg-transparent resize-none outline-none text-lg md:text-xl leading-8 text-gray-700 dark:text-gray-300 placeholder-gray-400/70 font-hand"
+                            spellCheck={false}
+                         />
+                       )}
+
+                       {/* Image Upload */}
+                       {showImageUpload && (
+                         <div className="h-full overflow-y-auto">
+                           <ImageUpload
+                             onTextExtracted={handleTextExtracted}
+                             onError={handleImageUploadError}
+                           />
+                         </div>
+                       )}
                     </NotebookSheet>
                     
                     {/* Action Bar (Pinned bottom of input col) */}
