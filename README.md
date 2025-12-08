@@ -11,6 +11,16 @@ A notebook-styled web application that analyzes lecture notes and categorizes th
   - **Bored**: Recognizes dismissive language, repetitive words, "boring", "useless", "skip", "blah blah"
   - **Alert**: Highlights important content with "exam question", "remember this", "imp", and dense key terms
 
+### OCR Text Extraction from Images
+- Upload photos or screenshots of handwritten or printed lecture notes
+- AI-powered text extraction using Google Gemini 2.5 Flash vision capabilities
+- Preserves formatting, paragraph structure, and line breaks
+- Describes diagrams and equations in [brackets]
+- Marks unclear text with (?)
+- Drag-and-drop or click-to-upload interface
+- Image preview with file validation (max 10MB)
+- Review and edit extracted text before analysis
+
 ### Interactive Timeline Visualization
 - Visual timeline strip showing mood distribution across your entire note sequence
 - Color-coded segments for quick pattern recognition
@@ -88,7 +98,13 @@ The application will be available at `http://localhost:3000`
 ## Usage
 
 1. Navigate to the home page and click "Start Analyzing Notes"
-2. Paste your lecture notes into the left input panel
+2. Choose your input method:
+   - **Type/Paste Text**: Directly paste your lecture notes into the textarea
+   - **Upload Image**: Upload a photo of handwritten or printed notes
+     - Drag and drop image or click to browse
+     - Preview your image before processing
+     - Click "Extract Text from Image" to use OCR
+     - Review and edit the extracted text
 3. Click "Analyze Moods" to process your notes with AI
 4. Review the analysis in the right panel:
    - View the mood timeline at the top
@@ -103,12 +119,14 @@ The application will be available at `http://localhost:3000`
 ```
 paper-thoughts/
 ├── components/
-│   ├── NotebookSheet.tsx      # Reusable notebook-styled container
+│   ├── ImageUpload.tsx         # Image upload with drag-drop and preview
+│   ├── NotebookSheet.tsx       # Reusable notebook-styled container
 │   ├── StickyNote.tsx          # Individual paragraph display with drag-and-drop
 │   ├── StudyPlan.tsx           # AI-generated study recommendations
 │   └── Timeline.tsx            # Visual mood timeline and heatmap
 ├── services/
-│   └── geminiService.ts        # Google Gemini AI integration
+│   ├── geminiService.ts        # Google Gemini AI integration for mood analysis
+│   └── ocrService.ts           # OCR text extraction from images
 ├── App.tsx                     # Main application component
 ├── types.ts                    # TypeScript type definitions
 ├── index.tsx                   # React entry point
@@ -121,12 +139,21 @@ paper-thoughts/
 
 ## API Configuration
 
-The application uses structured output from Google Gemini AI with a defined schema:
+The application uses Google Gemini AI for two main features:
+
+### Mood Analysis (gemini-2.5-flash)
+- Structured output with defined schema
 - Paragraph-level mood classification
 - Importance ratings (Low/Medium/High)
 - Keyword extraction (up to 4 per paragraph)
 - Summary statistics for all mood categories
 - Study plan with confused/confident paragraph indices
+
+### OCR Text Extraction (gemini-2.5-flash)
+- Vision model for image-to-text conversion
+- Supports handwritten and printed text
+- Preserves document structure and formatting
+- Handles unclear text and non-text elements
 
 ## Build
 
