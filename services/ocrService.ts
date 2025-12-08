@@ -26,7 +26,7 @@ export const extractTextFromImage = async (imageFile: File): Promise<string> => 
     Return the raw text content:`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
+      model: "gemini-2.5-flash",
       contents: [
         {
           role: "user",
