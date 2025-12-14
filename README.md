@@ -2,6 +2,8 @@
 
 A notebook-styled web application that analyzes lecture notes and categorizes them by mood using Gemini's wrath. Visualize where your notes felt confused, confident, bored, or alert with an intuitive timeline interface and drag-and-drop organization.
 
+## Try it out here: [Paper Thoughts Demo](https://trypaperthoughts.vercel.app/)
+
 ## Features
 
 ### AI-Powered Mood Analysis
