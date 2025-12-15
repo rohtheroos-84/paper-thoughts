@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { analyzeNotes } from './services/geminiService';
-import { AnalysisResponse, Mood, ParagraphAnalysis } from './types';
+import { AnalysisResponse, Mood, ParagraphAnalysis, SimpleNote } from './types';
 import { StickyNote } from './components/StickyNote';
 import { NotebookSheet } from './components/NotebookSheet';
 import { Timeline } from './components/Timeline';
 import { StudyPlan } from './components/StudyPlan';
 import { ImageUpload } from './components/ImageUpload';
+import { NoteTabs } from './components/NoteTabs';
 import { jsPDF } from 'jspdf';
 
 // --- Navigation Component ---
@@ -123,10 +124,16 @@ const AboutPage = ({ onBack }: { onBack: () => void }) => (
 export default function App() {
   const [page, setPage] = useState('home');
   const [darkMode, setDarkMode] = useState(false);
-  const [inputText, setInputText] = useState('');
+  
+  // Multi-note state
+  const [notes, setNotes] = useState<SimpleNote[]>([
+    { id: '1', title: 'Note 1', content: '', analysis: null }
+  ]);
+  const [activeNoteId, setActiveNoteId] = useState('1');
+  
+  // UI state for current note
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [result, setResult] = useState<AnalysisResponse | null>(null);
-  const [paragraphs, setParagraphs] = useState<ParagraphAnalysis[]>([]); // Separated for reordering
+  const [paragraphs, setParagraphs] = useState<ParagraphAnalysis[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterMood, setFilterMood] = useState<Mood | 'ALL'>('ALL');
   const [showImageUpload, setShowImageUpload] = useState(false);
@@ -134,6 +141,11 @@ export default function App() {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
+
+  // Get current active note
+  const activeNote = notes.find(n => n.id === activeNoteId) || notes[0];
+  const inputText = activeNote.content;
+  const result = activeNote.analysis;
 
   // Dark Mode Init
   useEffect(() => {
@@ -155,16 +167,71 @@ export default function App() {
       }
   };
 
+  // Note management functions
+  const updateActiveNote = (updates: Partial<SimpleNote>) => {
+    setNotes(notes.map(n => 
+      n.id === activeNoteId ? { ...n, ...updates } : n
+    ));
+  };
+
+  const handleInputChange = (text: string) => {
+    updateActiveNote({ content: text });
+  };
+
+  const handleSwitchNote = (id: string) => {
+    setActiveNoteId(id);
+    setError(null);
+    setShowImageUpload(false);
+    const note = notes.find(n => n.id === id);
+    if (note?.analysis) {
+      setParagraphs(note.analysis.paragraphs);
+    } else {
+      setParagraphs([]);
+    }
+  };
+
+  const handleNewNote = () => {
+    const newId = String(notes.length + 1);
+    const newNote: SimpleNote = {
+      id: newId,
+      title: `Note ${newId}`,
+      content: '',
+      analysis: null
+    };
+    setNotes([...notes, newNote]);
+    setActiveNoteId(newId);
+    setError(null);
+    setShowImageUpload(false);
+    setParagraphs([]);
+  };
+
+  const handleCloseNote = (id: string) => {
+    const remainingNotes = notes.filter(n => n.id !== id);
+    setNotes(remainingNotes);
+    
+    if (activeNoteId === id) {
+      const newActiveId = remainingNotes[remainingNotes.length - 1]?.id || remainingNotes[0]?.id;
+      if (newActiveId) {
+        handleSwitchNote(newActiveId);
+      }
+    }
+  };
+
+  const handleRenameNote = (id: string, newTitle: string) => {
+    setNotes(notes.map(n => 
+      n.id === id ? { ...n, title: newTitle } : n
+    ));
+  };
+
   const handleAnalyze = async () => {
     if (!inputText.trim()) return;
 
     setIsAnalyzing(true);
     setError(null);
-    setResult(null); // Clear old results
     
     try {
       const data = await analyzeNotes(inputText);
-      setResult(data);
+      updateActiveNote({ analysis: data });
       setParagraphs(data.paragraphs);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to analyze notes. Please try again.";
@@ -176,8 +243,7 @@ export default function App() {
   };
 
   const handleClear = () => {
-    setInputText('');
-    setResult(null);
+    updateActiveNote({ content: '', analysis: null });
     setParagraphs([]);
     setError(null);
     setShowImageUpload(false);
@@ -185,7 +251,7 @@ export default function App() {
   };
 
   const handleTextExtracted = (text: string) => {
-    setInputText(text);
+    updateActiveNote({ content: text });
     setShowImageUpload(false);
     setError(null);
     // Focus on textarea to allow user to edit
@@ -306,6 +372,16 @@ export default function App() {
                   <div className="w-10"></div>
                 </div>
 
+                {/* Note Tabs */}
+                <NoteTabs
+                  notes={notes}
+                  activeNoteId={activeNoteId}
+                  onSwitch={handleSwitchNote}
+                  onNew={handleNewNote}
+                  onClose={handleCloseNote}
+                  onRename={handleRenameNote}
+                />
+
                 {/* OS Content Area */}
                 <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-[#f8f8f8] dark:bg-gray-900">
                   
@@ -341,7 +417,7 @@ export default function App() {
                          <textarea
                             ref={textAreaRef}
                             value={inputText}
-                            onChange={(e) => setInputText(e.target.value)}
+                            onChange={(e) => handleInputChange(e.target.value)}
                             placeholder="Paste your lecture notes here or switch to 'Upload Image' to scan handwritten notes..."
                             className="w-full h-full bg-transparent resize-none outline-none text-lg md:text-xl leading-8 text-gray-700 dark:text-gray-300 placeholder-gray-400/70 font-hand"
                             spellCheck={false}

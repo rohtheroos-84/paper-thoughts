@@ -34,6 +34,13 @@ export interface AnalysisResponse {
   studyPlan: StudyPlan;
 }
 
+export interface SimpleNote {
+  id: string;
+  title: string;
+  content: string;
+  analysis: AnalysisResponse | null;
+}
+
 // Helper to ensure type safety when mapping API strings to Enum
 export function isMood(value: string): value is Mood {
   return Object.values(Mood).includes(value as Mood);
