@@ -37,6 +37,9 @@ A notebook-styled web application that analyzes lecture notes and categorizes th
 - Provides personalized study suggestions
 
 ### Organizational Features
+- Multi-note management with tab interface for working on multiple lectures simultaneously
+- Session-based notes (up to 10 tabs) with independent content and analysis
+- Quick tab switching and easy note renaming (click edit icon or double-click title)
 - Drag-and-drop paragraph reordering for custom organization
 - Mood-based filtering (All, Confused, Confident, Bored, Alert)
 - Importance tagging (Low, Medium, High) for each paragraph
@@ -100,21 +103,28 @@ The application will be available at `http://localhost:3000`
 ## Usage
 
 1. Navigate to the home page and click "Start Analyzing Notes"
-2. Choose your input method:
+2. **Multi-Note Management**:
+   - Create multiple notes using the "+ New" button (up to 10 tabs)
+   - Switch between notes by clicking tabs
+   - Rename notes by clicking the edit icon or double-clicking the tab title
+   - Close notes with the × button (last note cannot be closed)
+3. Choose your input method:
    - **Type/Paste Text**: Directly paste your lecture notes into the textarea
    - **Upload Image**: Upload a photo of handwritten or printed notes
      - Drag and drop image or click to browse
      - Preview your image before processing
      - Click "Extract Text from Image" to use OCR
      - Review and edit the extracted text
-3. Click "Analyze Moods" to process your notes with AI
-4. Review the analysis in the right panel:
+4. Click "Analyze Moods" to process your notes with AI
+5. Review the analysis in the right panel:
    - View the mood timeline at the top
    - Read the AI-generated study plan
    - Scroll through color-coded paragraph cards
-5. Use the sidebar tabs to filter by specific moods
-6. Drag and drop paragraphs to reorganize (available when showing all notes)
-7. Download your analysis as a PDF for offline study
+6. Use the sidebar tabs to filter by specific moods
+7. Drag and drop paragraphs to reorganize (available when showing all notes)
+8. Download your analysis as a PDF for offline study
+
+**Note**: All notes are session-based and will be cleared on page refresh.
 
 ## Project Structure
 
@@ -123,6 +133,7 @@ paper-thoughts/
 ├── components/
 │   ├── ImageUpload.tsx         # Image upload with drag-drop and preview
 │   ├── NotebookSheet.tsx       # Reusable notebook-styled container
+│   ├── NoteTabs.tsx            # Multi-note tab management interface
 │   ├── StickyNote.tsx          # Individual paragraph display with drag-and-drop
 │   ├── StudyPlan.tsx           # AI-generated study recommendations
 │   └── Timeline.tsx            # Visual mood timeline and heatmap
