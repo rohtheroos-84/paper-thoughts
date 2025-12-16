@@ -13,6 +13,14 @@ A notebook-styled web application that analyzes lecture notes and categorizes th
   - **Bored**: Recognizes dismissive language, repetitive words, "boring", "useless", "skip", "blah blah"
   - **Alert**: Highlights important content with "exam question", "remember this", "imp", and dense key terms
 
+### AI Enhancement Features
+- **Summary Generation**: AI-created TL;DR (2-3 sentences) for each note, displayed in a blue gradient card. Provides quick overview of main topics and key takeaways
+- **Difficulty Rating**: Each paragraph rated by complexity level with color-coded badges:
+  - Beginner (green): Basic concepts accessible to newcomers
+  - Intermediate (yellow): Requires some background knowledge
+  - Advanced (red): Complex technical content
+- **Prerequisites Detection**: For confused paragraphs, AI identifies 2-3 foundational concepts to learn first. Displayed in yellow highlighted boxes with learning icon
+
 ### OCR Text Extraction from Images
 - Upload photos or screenshots of handwritten or printed lecture notes
 - AI-powered text extraction using Google Gemini 2.5 Flash vision capabilities
@@ -118,8 +126,10 @@ The application will be available at `http://localhost:3000`
 4. Click "Analyze Moods" to process your notes with AI
 5. Review the analysis in the right panel:
    - View the mood timeline at the top
+   - Read the AI-generated TL;DR summary card
    - Read the AI-generated study plan
-   - Scroll through color-coded paragraph cards
+   - Scroll through color-coded paragraph cards with difficulty badges
+   - Check prerequisite suggestions on confused paragraphs
 6. Use the sidebar tabs to filter by specific moods
 7. Drag and drop paragraphs to reorganize (available when showing all notes)
 8. Download your analysis as a PDF for offline study
@@ -133,6 +143,7 @@ paper-thoughts/
 ├── components/
 │   ├── ImageUpload.tsx         # Image upload with drag-drop and preview
 │   ├── NotebookSheet.tsx       # Reusable notebook-styled container
+│   ├── NoteSummary.tsx         # TL;DR summary display with blue gradient
 │   ├── NoteTabs.tsx            # Multi-note tab management interface
 │   ├── StickyNote.tsx          # Individual paragraph display with drag-and-drop
 │   ├── StudyPlan.tsx           # AI-generated study recommendations
@@ -158,7 +169,10 @@ The application uses Google Gemini AI for two main features:
 - Structured output with defined schema
 - Paragraph-level mood classification
 - Importance ratings (Low/Medium/High)
+- Difficulty ratings (Beginner/Intermediate/Advanced)
 - Keyword extraction (up to 4 per paragraph)
+- Prerequisites detection for confused paragraphs (2-3 foundational concepts)
+- TL;DR summary generation (2-3 sentence overview)
 - Summary statistics for all mood categories
 - Study plan with confused/confident paragraph indices
 
