@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mood, Importance } from '../types';
+import { Mood, Importance, Difficulty } from '../types';
 
 interface StickyNoteProps {
   id: string;
@@ -7,6 +7,7 @@ interface StickyNoteProps {
   mood: Mood;
   importance: Importance;
   keywords: string[];
+  difficulty: Difficulty;
   index: number;
   onDragStart: (e: React.DragEvent, index: number) => void;
   onDragOver: (e: React.DragEvent, index: number) => void;
@@ -84,9 +85,15 @@ const HighlightedText: React.FC<{ text: string; keywords: string[] }> = ({ text,
 };
 
 export const StickyNote: React.FC<StickyNoteProps> = ({ 
-    id, text, mood, importance, keywords, index, onDragStart, onDragOver, onDrop 
+    id, text, mood, importance, keywords, difficulty, index, onDragStart, onDragOver, onDrop 
 }) => {
   const rotation = React.useMemo(() => getRandomRotation(index), [index]);
+  
+  const difficultyColors: Record<Difficulty, string> = {
+    'Beginner': 'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700',
+    'Intermediate': 'bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-700',
+    'Advanced': 'bg-red-100 text-red-700 border-red-300 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700'
+  };
   
   return (
     <div 
@@ -127,13 +134,23 @@ export const StickyNote: React.FC<StickyNoteProps> = ({
             </span>
         </div>
         
-        {/* Importance Stamp */}
-        <div className={`
-             text-[10px] font-bold uppercase tracking-wider border-2 rounded px-1 transform rotate-6 opacity-70
-             ${importance === 'High' ? 'border-red-600 text-red-600 dark:border-red-400 dark:text-red-400' : 
-               importance === 'Medium' ? 'border-orange-500 text-orange-500' : 'border-gray-500 text-gray-500'}
-        `}>
-            {importance}
+        <div className="flex items-center gap-2">
+          {/* Difficulty Badge */}
+          <div className={`
+            text-[10px] font-bold uppercase tracking-wider border rounded-full px-2 py-0.5 transform -rotate-3
+            ${difficultyColors[difficulty]}
+          `}>
+            {difficulty}
+          </div>
+          
+          {/* Importance Stamp */}
+          <div className={`
+               text-[10px] font-bold uppercase tracking-wider border-2 rounded px-1 transform rotate-6 opacity-70
+               ${importance === 'High' ? 'border-red-600 text-red-600 dark:border-red-400 dark:text-red-400' : 
+                 importance === 'Medium' ? 'border-orange-500 text-orange-500' : 'border-gray-500 text-gray-500'}
+          `}>
+              {importance}
+          </div>
         </div>
       </div>
 

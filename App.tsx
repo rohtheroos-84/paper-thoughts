@@ -554,6 +554,7 @@ export default function App() {
                                                 mood={p.mood}
                                                 importance={p.importance}
                                                 keywords={p.keywords}
+                                                difficulty={p.difficulty}
                                                 onDragStart={(e, i) => filterMood === 'ALL' && onDragStart(e, i)}
                                                 onDragOver={(e, i) => filterMood === 'ALL' && onDragOver(e, i)}
                                                 onDrop={(e, i) => filterMood === 'ALL' && onDrop(e)}

@@ -50,8 +50,9 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
             mood: { type: Type.STRING, enum: ["confused", "confident", "bored", "alert"] },
             importance: { type: Type.STRING, enum: ["Low", "Medium", "High"] },
             keywords: { type: Type.ARRAY, items: { type: Type.STRING } },
+            difficulty: { type: Type.STRING, enum: ["Beginner", "Intermediate", "Advanced"], description: "Complexity level of the content" },
           },
-          required: ["text", "mood", "importance", "keywords"],
+          required: ["text", "mood", "importance", "keywords", "difficulty"],
         },
       },
       summary: {
@@ -87,8 +88,9 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
     1. Assign one mood per paragraph: confused, confident, bored, or alert.
     2. Assign importance level: Low, Medium, High.
     3. Extract up to 4 keywords/phrases per paragraph.
-    4. Create a study plan summarizing the most critical areas.
-    5. Generate a concise TL;DR (2-3 sentences) summarizing the main topics and key takeaways of this entire lecture.
+    4. Rate difficulty: Beginner (basic concepts), Intermediate (requires some background), Advanced (complex/technical).
+    5. Create a study plan summarizing the most critical areas.
+    6. Generate a concise TL;DR (2-3 sentences) summarizing the main topics and key takeaways of this entire lecture.
     
     Mood Rules:
     ${MOOD_DESCRIPTIONS}

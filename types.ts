@@ -6,6 +6,7 @@ export enum Mood {
 }
 
 export type Importance = 'Low' | 'Medium' | 'High';
+export type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 
 export interface ParagraphAnalysis {
   id: string; // Unique ID for Drag and Drop
@@ -13,6 +14,7 @@ export interface ParagraphAnalysis {
   mood: Mood;
   importance: Importance;
   keywords: string[];
+  difficulty: Difficulty;
 }
 
 export interface AnalysisSummary {
