@@ -7,6 +7,7 @@ import { Timeline } from './components/Timeline';
 import { StudyPlan } from './components/StudyPlan';
 import { ImageUpload } from './components/ImageUpload';
 import { NoteTabs } from './components/NoteTabs';
+import { NoteSummary } from './components/NoteSummary';
 import { jsPDF } from 'jspdf';
 
 // --- Navigation Component ---
@@ -528,6 +529,8 @@ export default function App() {
                                {result && !isAnalyzing && (
                                    <>
                                      <Timeline paragraphs={paragraphs} onParagraphClick={scrollToParagraph} />
+                                     
+                                     {result.tldr && <NoteSummary tldr={result.tldr} />}
                                      
                                      <StudyPlan plan={result.studyPlan} paragraphs={paragraphs} />
                                      

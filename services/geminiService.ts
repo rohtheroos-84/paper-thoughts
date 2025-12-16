@@ -23,7 +23,8 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
     return {
       paragraphs: [],
       summary: { confused: 0, confident: 0, bored: 0, alert: 0 },
-      studyPlan: { topConfusedIndices: [], topConfidentIndices: [], suggestion: "" }
+      studyPlan: { topConfusedIndices: [], topConfidentIndices: [], suggestion: "" },
+      tldr: ""
     };
   }
 
@@ -70,9 +71,13 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
             topConfidentIndices: { type: Type.ARRAY, items: { type: Type.INTEGER }, description: "Indices of 1-2 confident/alert paragraphs." },
             suggestion: { type: Type.STRING, description: "One sentence study suggestion." }
          }
+      },
+      tldr: { 
+        type: Type.STRING, 
+        description: "A concise 2-3 sentence summary (TL;DR) of the entire lecture note content. Capture the main topics and key takeaways." 
       }
     },
-    required: ["paragraphs", "summary", "studyPlan"],
+    required: ["paragraphs", "summary", "studyPlan", "tldr"],
   };
 
   const prompt = `
@@ -83,6 +88,7 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
     2. Assign importance level: Low, Medium, High.
     3. Extract up to 4 keywords/phrases per paragraph.
     4. Create a study plan summarizing the most critical areas.
+    5. Generate a concise TL;DR (2-3 sentences) summarizing the main topics and key takeaways of this entire lecture.
     
     Mood Rules:
     ${MOOD_DESCRIPTIONS}
@@ -95,7 +101,7 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: prompt,
       config: {
         responseMimeType: "application/json",

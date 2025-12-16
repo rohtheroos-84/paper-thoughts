@@ -32,6 +32,7 @@ export interface AnalysisResponse {
   paragraphs: ParagraphAnalysis[];
   summary: AnalysisSummary;
   studyPlan: StudyPlan;
+  tldr: string; // AI-generated summary of the entire note
 }
 
 export interface SimpleNote {
