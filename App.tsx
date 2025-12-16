@@ -555,6 +555,7 @@ export default function App() {
                                                 importance={p.importance}
                                                 keywords={p.keywords}
                                                 difficulty={p.difficulty}
+                                                prerequisites={p.prerequisites}
                                                 onDragStart={(e, i) => filterMood === 'ALL' && onDragStart(e, i)}
                                                 onDragOver={(e, i) => filterMood === 'ALL' && onDragOver(e, i)}
                                                 onDrop={(e, i) => filterMood === 'ALL' && onDrop(e)}

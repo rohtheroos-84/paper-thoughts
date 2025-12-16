@@ -15,6 +15,7 @@ export interface ParagraphAnalysis {
   importance: Importance;
   keywords: string[];
   difficulty: Difficulty;
+  prerequisites?: string[]; // For confused paragraphs: what to learn first
 }
 
 export interface AnalysisSummary {

@@ -8,6 +8,7 @@ interface StickyNoteProps {
   importance: Importance;
   keywords: string[];
   difficulty: Difficulty;
+  prerequisites?: string[];
   index: number;
   onDragStart: (e: React.DragEvent, index: number) => void;
   onDragOver: (e: React.DragEvent, index: number) => void;
@@ -85,7 +86,7 @@ const HighlightedText: React.FC<{ text: string; keywords: string[] }> = ({ text,
 };
 
 export const StickyNote: React.FC<StickyNoteProps> = ({ 
-    id, text, mood, importance, keywords, difficulty, index, onDragStart, onDragOver, onDrop 
+    id, text, mood, importance, keywords, difficulty, prerequisites, index, onDragStart, onDragOver, onDrop 
 }) => {
   const rotation = React.useMemo(() => getRandomRotation(index), [index]);
   
@@ -158,6 +159,26 @@ export const StickyNote: React.FC<StickyNoteProps> = ({
       <p className="whitespace-pre-wrap mb-3">
          <HighlightedText text={text} keywords={keywords} />
       </p>
+
+      {/* Prerequisites (for confused paragraphs) */}
+      {prerequisites && prerequisites.length > 0 && (
+          <div className="mb-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 rounded">
+             <div className="flex items-start gap-2">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 flex-shrink-0">
+                 <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                 <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+               </svg>
+               <div className="text-sm font-sans">
+                 <span className="font-semibold text-yellow-800 dark:text-yellow-200">Learn first:</span>
+                 <ul className="mt-1 space-y-0.5 text-yellow-700 dark:text-yellow-300">
+                   {prerequisites.map((prereq, idx) => (
+                     <li key={idx}>• {prereq}</li>
+                   ))}
+                 </ul>
+               </div>
+             </div>
+          </div>
+      )}
 
       {/* Keywords Footer */}
       {keywords && keywords.length > 0 && (

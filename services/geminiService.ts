@@ -51,6 +51,12 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
             importance: { type: Type.STRING, enum: ["Low", "Medium", "High"] },
             keywords: { type: Type.ARRAY, items: { type: Type.STRING } },
             difficulty: { type: Type.STRING, enum: ["Beginner", "Intermediate", "Advanced"], description: "Complexity level of the content" },
+            prerequisites: { 
+              type: Type.ARRAY, 
+              items: { type: Type.STRING },
+              description: "For confused paragraphs only: list 2-3 foundational concepts/topics that should be understood first",
+              nullable: true
+            },
           },
           required: ["text", "mood", "importance", "keywords", "difficulty"],
         },
@@ -89,8 +95,9 @@ export const analyzeNotes = async (text: string): Promise<AnalysisResponse> => {
     2. Assign importance level: Low, Medium, High.
     3. Extract up to 4 keywords/phrases per paragraph.
     4. Rate difficulty: Beginner (basic concepts), Intermediate (requires some background), Advanced (complex/technical).
-    5. Create a study plan summarizing the most critical areas.
-    6. Generate a concise TL;DR (2-3 sentences) summarizing the main topics and key takeaways of this entire lecture.
+    5. For CONFUSED paragraphs only: identify 2-3 prerequisite concepts or topics the reader should understand first.
+    6. Create a study plan summarizing the most critical areas.
+    7. Generate a concise TL;DR (2-3 sentences) summarizing the main topics and key takeaways of this entire lecture.
     
     Mood Rules:
     ${MOOD_DESCRIPTIONS}
